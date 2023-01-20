@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".HostConfigActivity">
+
+
+    <TextView
+        android:id="@+id/hostConfigText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="请输入服务器地址"
+        android:ellipsize="start"
+        android:gravity="center_horizontal"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/editHostConfig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text|textUri"
+        android:text="服务器地址"
+        android:gravity="center_horizontal"
+        tools:ignore="MissingConstraints"
+        />
+
+    <Button
+        android:id="@+id/btnHostConfig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="继续以登录"
+        tools:ignore="MissingConstraints" />
+
+</LinearLayout>
