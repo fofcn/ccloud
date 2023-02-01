@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text|textUri"
-        android:text="服务器地址"
+        android:hint="服务器地址"
         android:gravity="center_horizontal"
         tools:ignore="MissingConstraints"
         />

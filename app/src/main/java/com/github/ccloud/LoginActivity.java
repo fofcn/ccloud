@@ -2,33 +2,74 @@ package com.github.ccloud;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.github.ccloud.constant.HostConstant;
+import com.github.ccloud.http.api.AccountHttpApi;
+import com.github.ccloud.http.client.HttpClient;
+import com.github.ccloud.http.entity.Response;
+import com.github.ccloud.http.entity.cmd.LoginCmd;
+import com.github.ccloud.http.entity.dto.LoginDto;
+import com.github.ccloud.util.ContextHolder;
+import com.github.ccloud.util.SpUtil;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class LoginActivity extends Activity {
 
     private Button loginBtn;
 
-    private Button testBtn;
+    private EditText editUsername;
+
+    private EditText editPassword;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         loginBtn = findViewById(R.id.btnLogin);
+        editUsername = findViewById(R.id.editUsername);
+        editPassword = findViewById(R.id.editPassword);
+
         loginBtn.setOnClickListener(view -> {
-            Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-            setContentView(R.layout.activity_index);
-        });
 
-        testBtn = findViewById(R.id.btnLogin);
+            // 获取用户名和密码
+            String username = editUsername.getText().toString();
+            String password = editPassword.getText().toString();
+            // 调用接口
+            AccountHttpApi accountApi = HttpClient.init(AccountHttpApi.class);
+            Call<Response<LoginDto>> resp = accountApi.accountLogin(new LoginCmd(username, password));
+            resp.enqueue(new Callback<Response<LoginDto>>() {
+                // 验证返回接口
+                @Override
+                public void onResponse(Call<Response<LoginDto>> call, retrofit2.Response<Response<LoginDto>> response) {
+                    Response<LoginDto> loginDto = response.body();
+                    // 如果成功则-》存储token-》跳转页面
+                    if (loginDto.isSuccess()) {
+                        LoginDto dto = loginDto.getData();
+                        SpUtil.getInstance().save(HostConstant.ACCOUNT_TOKEN_KEY, dto.getToken());
+                        SpUtil.getInstance().save(HostConstant.ACCOUNT_USER_ID_KEY, dto.getId());
+                        Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                        setContentView(R.layout.activity_index);
+                    } else {
+                        // 如果失败则-》toast提示
+                        Log.e("Account", "login failed, error code: " + loginDto.getErrorCode() + " error message: " + loginDto.getErrorMsg() + "");
+                        Toast.makeText(ContextHolder.getContext(), "登录失败：" + loginDto.getErrorMsg(), Toast.LENGTH_SHORT).show();
+                    }
+                }
 
-        testBtn.setOnClickListener(view -> {
-            Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-            setContentView(R.layout.activity_index);
+                @Override
+                public void onFailure(Call<Response<LoginDto>> call, Throwable t) {
+                    Log.e("HTTPClient", "post回调失败：" + t.getMessage() + "," + t);
+                    Toast.makeText(ContextHolder.getContext(), "网络错误，请重试", Toast.LENGTH_SHORT).show();
+                }
+            });
+
         });
     }
 }
