@@ -1,6 +1,7 @@
 package com.github.ccloud;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -55,7 +56,9 @@ public class LoginActivity extends Activity {
                         SpUtil.getInstance().save(HostConstant.ACCOUNT_TOKEN_KEY, dto.getToken());
                         SpUtil.getInstance().save(HostConstant.ACCOUNT_USER_ID_KEY, dto.getId());
                         Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                        setContentView(R.layout.activity_index);
+
+                        startActivity(new Intent(ContextHolder.getContext(), IndexActivity.class));
+
                     } else {
                         // 如果失败则-》toast提示
                         Log.e("Account", "login failed, error code: " + loginDto.getErrorCode() + " error message: " + loginDto.getErrorMsg() + "");
@@ -66,7 +69,7 @@ public class LoginActivity extends Activity {
                 @Override
                 public void onFailure(Call<Response<LoginDto>> call, Throwable t) {
                     Log.e("HTTPClient", "post回调失败：" + t.getMessage() + "," + t);
-                    Toast.makeText(ContextHolder.getContext(), "网络错误，请重试", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ContextHolder.getContext(), "网络不给力，请重试", Toast.LENGTH_SHORT).show();
                 }
             });
 

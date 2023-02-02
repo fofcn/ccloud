@@ -33,14 +33,16 @@ public class SpUtil {
      * @param value 值
      */
     public void save(String key, Object value) {
+        SharedPreferences.Editor editor = mSp.edit();
 
         if (value instanceof String) {
-            mSp.edit().putString(key, (String) value).commit();
+            editor.putString(key, (String) value);
         } else if (value instanceof Boolean) {
-            mSp.edit().putBoolean(key, (Boolean) value).commit();
+            editor.putBoolean(key, (Boolean) value);
         } else if (value instanceof Integer) {
-            mSp.edit().putInt(key, (Integer) value).commit();
+            editor.putInt(key, (Integer) value);
         }
+        editor.commit();
     }
 
     // 读取String类型数据

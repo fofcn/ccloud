@@ -43,17 +43,15 @@ public class HostConfigActivity extends AppCompatActivity {
                     return;
                 }
                 // 保存Host address
-                SpUtil.getInstance().save(HostConstant.HOST_ADDRESS_KEY, host);
+                SpUtil.getInstance().save(HostConstant.HOST_ADDRESS_KEY, hostEditText.getText().toString());
 
-                Intent intent = new Intent();
-                intent.setClass(ContextHolder.getContext(), LoginActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(ContextHolder.getContext(), LoginActivity.class));
             });
         } else {
             // 检查是否Token
             String token = SpUtil.getInstance().getString(HostConstant.ACCOUNT_TOKEN_KEY, "");
             if ("".equals(host)) {
-                setContentView(R.layout.activity_login);
+                startActivity(new Intent(ContextHolder.getContext(), LoginActivity.class));
             } else {
                 // 验证Token是否过期
                 AccountHttpApi accountApi = HttpClient.init(AccountHttpApi.class);
@@ -63,15 +61,15 @@ public class HostConfigActivity extends AppCompatActivity {
                     public void onResponse(Call<Response<Void>> call, retrofit2.Response<Response<Void>> response) {
                         Response resp = response.body();
                         if (resp.isSuccess()) {
-                            setContentView(R.layout.activity_index);
+                            startActivity(new Intent(ContextHolder.getContext(), IndexActivity.class));
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Response<Void>> call, Throwable t) {
                         Log.e("Network", "网络错误：" + t.getMessage() + "," + t);
-                        Toast.makeText(HostConfigActivity.this, "post回调失败", Toast.LENGTH_SHORT).show();
-                        setContentView(R.layout.activity_login);
+                        Toast.makeText(HostConfigActivity.this, "网络不给力，请重试", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(ContextHolder.getContext(), LoginActivity.class));
                     }
                 });
 
