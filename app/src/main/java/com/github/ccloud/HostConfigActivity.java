@@ -13,6 +13,7 @@ import com.github.ccloud.constant.HostConstant;
 import com.github.ccloud.http.api.AccountHttpApi;
 import com.github.ccloud.http.client.HttpClient;
 import com.github.ccloud.http.entity.Response;
+import com.github.ccloud.ui.photo.PhotoContentObserver;
 import com.github.ccloud.util.ContextHolder;
 import com.github.ccloud.util.SpUtil;
 
@@ -25,11 +26,31 @@ public class HostConfigActivity extends AppCompatActivity {
 
     private EditText hostEditText;
 
+    private PhotoContentObserver photoContentObserver;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        getContentResolver().unregisterContentObserver(photoContentObserver);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        checkConfigAndToken();
+
+//        photoContentObserver = new PhotoContentObserver( Looper.getMainLooper());
+
+        // 开启图片上传
+//        getContentResolver().registerContentObserver(
+//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//                true,
+//                photoContentObserver);
+
+    }
+
+    private void checkConfigAndToken() {
         //检查是否配置CCloud URL
         String host = SpUtil.getInstance().getString(HostConstant.HOST_ADDRESS_KEY, "");
         if ("".equals(host)) {

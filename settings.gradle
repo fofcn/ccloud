@@ -28,3 +28,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "CCloud"
 include ':app'
+include ':library'

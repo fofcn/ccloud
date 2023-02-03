@@ -79,7 +79,7 @@ public class PhotoFragment extends Fragment {
         for (int i = 0; i < 20; i++) {
             PhotoListDto dto = new PhotoListDto();
             dto.setName("照片-" + photoNameIdx.incrementAndGet());
-            dto.setUrl("");
+            dto.setUrl("http://dafasdf");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 dto.setCreateTime(LocalDateTime.now());
             }
