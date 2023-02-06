@@ -82,7 +82,11 @@ public class HostConfigActivity extends AppCompatActivity {
                     public void onResponse(Call<Response<Void>> call, retrofit2.Response<Response<Void>> response) {
                         Response resp = response.body();
                         if (resp.isSuccess()) {
+                            // token 有效则跳转到首页
                             startActivity(new Intent(ContextHolder.getContext(), IndexActivity.class));
+                        } else {
+                            // token无效则跳转到登录页
+                            startActivity(new Intent(ContextHolder.getContext(), LoginActivity.class));
                         }
                     }
 
