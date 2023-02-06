@@ -29,9 +29,9 @@ jobs:
       with:
           name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK(s) debug generated
           path: |
-            ${{ env.main_project_module }}/build/outputs/apk/debug/
+            ./app/build/outputs/apk/debug/app-debug.apk
     - name: Upload APK Release - ${{ env.repository_name }}
       uses: actions/upload-artifact@v2
       with:
         name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK(s) release generated
-        path: ${{ env.main_project_module }}/build/outputs/apk/release/
+        path: ./app/build/outputs/apk/release/app-release-unsigned.apk
