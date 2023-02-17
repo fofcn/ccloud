@@ -1,6 +1,6 @@
 package com.github.ccloud.http.api;
 
-import com.github.ccloud.http.entity.Response;
+import com.github.ccloud.entity.Response;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;

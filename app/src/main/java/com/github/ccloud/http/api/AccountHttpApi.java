@@ -1,9 +1,9 @@
 package com.github.ccloud.http.api;
 
 import com.github.ccloud.constant.HostConstant;
-import com.github.ccloud.http.entity.Response;
-import com.github.ccloud.http.entity.cmd.LoginCmd;
-import com.github.ccloud.http.entity.dto.LoginDto;
+import com.github.ccloud.entity.Response;
+import com.github.ccloud.entity.cmd.LoginCmd;
+import com.github.ccloud.entity.dto.LoginDto;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

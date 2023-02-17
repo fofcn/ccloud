@@ -3,16 +3,13 @@ package com.github.ccloud;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.github.ccloud.ui.index.CustomFragmentPagerAdapter;
+import com.github.ccloud.view.index.CustomFragmentPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

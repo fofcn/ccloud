@@ -8,14 +8,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.github.ccloud.constant.HostConstant;
+import com.github.ccloud.entity.Response;
+import com.github.ccloud.entity.cmd.LoginCmd;
+import com.github.ccloud.entity.dto.LoginDto;
 import com.github.ccloud.http.api.AccountHttpApi;
 import com.github.ccloud.http.client.HttpClient;
-import com.github.ccloud.http.entity.Response;
-import com.github.ccloud.http.entity.cmd.LoginCmd;
-import com.github.ccloud.http.entity.dto.LoginDto;
+import com.github.ccloud.util.AuthUtil;
 import com.github.ccloud.util.ContextHolder;
-import com.github.ccloud.util.SpUtil;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,7 +37,6 @@ public class LoginActivity extends Activity {
         editPassword = findViewById(R.id.editPassword);
 
         loginBtn.setOnClickListener(view -> {
-
             // 获取用户名和密码
             String username = editUsername.getText().toString();
             String password = editPassword.getText().toString();
@@ -53,10 +51,9 @@ public class LoginActivity extends Activity {
                     // 如果成功则-》存储token-》跳转页面
                     if (loginDto.isSuccess()) {
                         LoginDto dto = loginDto.getData();
-                        SpUtil.getInstance().save(HostConstant.ACCOUNT_TOKEN_KEY, dto.getToken());
-                        SpUtil.getInstance().save(HostConstant.ACCOUNT_USER_ID_KEY, dto.getId());
+                        AuthUtil.saveToken(dto.getToken());
+                        AuthUtil.saveUserId(dto.getId());
                         Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-
                         startActivity(new Intent(ContextHolder.getContext(), IndexActivity.class));
 
                     } else {

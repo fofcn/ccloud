@@ -1,21 +1,32 @@
 package com.github.ccloud;
 
+import static android.content.ContentValues.TAG;
+
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import com.github.ccloud.common.sync.BaseFileSynchronizer;
+import com.github.ccloud.common.sync.FileSynchronizer;
 import com.github.ccloud.constant.HostConstant;
+import com.github.ccloud.entity.Response;
 import com.github.ccloud.http.api.AccountHttpApi;
 import com.github.ccloud.http.client.HttpClient;
-import com.github.ccloud.http.entity.Response;
-import com.github.ccloud.ui.photo.PhotoContentObserver;
+import com.github.ccloud.util.AuthUtil;
 import com.github.ccloud.util.ContextHolder;
 import com.github.ccloud.util.SpUtil;
+import com.github.ccloud.view.photo.PhotoContentObserver;
+import com.github.ccloud.view.photo.sync.PhotoFileSynchronizer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,6 +50,30 @@ public class HostConfigActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         checkConfigAndToken();
+        int hasReadStoragePermission = ContextCompat.checkSelfPermission(getApplication(), Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (hasReadStoragePermission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        } else {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(3 * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                FileSynchronizer fileSynchronizer = new BaseFileSynchronizer();
+                // 同步上传
+                PhotoFileSynchronizer photoFileSynchronizer = new PhotoFileSynchronizer();
+                fileSynchronizer.setFileFetcher(photoFileSynchronizer);
+                fileSynchronizer.setFileUploader(photoFileSynchronizer);
+                fileSynchronizer.init();
+                fileSynchronizer.start();
+
+            }).start();
+        }
+
+
+
+
 
 //        photoContentObserver = new PhotoContentObserver( Looper.getMainLooper());
 
@@ -49,6 +84,14 @@ public class HostConfigActivity extends AppCompatActivity {
 //                photoContentObserver);
 
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i(TAG, "Permission request result " + requestCode);
+    }
+
+
 
     private void checkConfigAndToken() {
         //检查是否配置CCloud URL
@@ -70,7 +113,7 @@ public class HostConfigActivity extends AppCompatActivity {
             });
         } else {
             // 检查是否Token
-            String token = SpUtil.getInstance().getString(HostConstant.ACCOUNT_TOKEN_KEY, "");
+            String token = AuthUtil.getToken();
             if ("".equals(host)) {
                 startActivity(new Intent(ContextHolder.getContext(), LoginActivity.class));
             } else {
@@ -86,6 +129,7 @@ public class HostConfigActivity extends AppCompatActivity {
                             startActivity(new Intent(ContextHolder.getContext(), IndexActivity.class));
                         } else {
                             // token无效则跳转到登录页
+                            AuthUtil.deleteToken();
                             startActivity(new Intent(ContextHolder.getContext(), LoginActivity.class));
                         }
                     }

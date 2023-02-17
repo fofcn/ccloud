@@ -41,7 +41,15 @@ public class SpUtil {
             editor.putBoolean(key, (Boolean) value);
         } else if (value instanceof Integer) {
             editor.putInt(key, (Integer) value);
+        } else if (value instanceof Long) {
+            editor.putLong(key, (Long) value);
         }
+        editor.commit();
+    }
+
+    public void delete(String key) {
+        SharedPreferences.Editor editor = mSp.edit();
+        editor.remove(key);
         editor.commit();
     }
 
@@ -58,6 +66,11 @@ public class SpUtil {
     // 读取int类型数据
     public int getInt(String key, int defValue) {
         return mSp.getInt(key, defValue);
+    }
+
+    // 读取int类型数据
+    public Long getLong(String key, long defValue) {
+        return mSp.getLong(key, defValue);
     }
 
 }
