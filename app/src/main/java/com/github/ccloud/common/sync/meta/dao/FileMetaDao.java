@@ -72,4 +72,9 @@ public class FileMetaDao {
         return fileMetaList;
     }
 
+    public void updateSyncState(FileMeta fileMeta) {
+        String query = "update `file_meta` set sync=?, sync_action=?, sync_result=?, sync_version=?, sync_time=? where id=?";
+        SQLiteDatabase mediaDB = fileMetaSQLiteOpenHelper.getReadableDatabase();
+        mediaDB.execSQL(query, new Object[]{fileMeta.getSync(), fileMeta.getSyncAction(), fileMeta.getSyncResult(), fileMeta.getSyncVersion(), fileMeta.getSyncVersion(), fileMeta.getId()});
+    }
 }

@@ -39,6 +39,7 @@ public class SQLiteMetaManager implements FileMetaManager {
 
     @Override
     public boolean setSynced(FileMeta fileMeta) {
+        fileMetaDao.updateSyncState(fileMeta);
         return false;
     }
 

@@ -1,7 +1,8 @@
 package com.github.ccloud.common.sync.dict;
 
 public enum SyncResultEnum {
-    SUCCESS(0);
+    SUCCESS(0),
+    FAILED(1);
 
     private int code;
 

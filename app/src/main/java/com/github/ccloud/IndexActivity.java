@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.ccloud.view.index.CustomFragmentPagerAdapter;
+import com.github.ccloud.view.photo.Synchronizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class IndexActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
+
+        Synchronizer.getInstance().startSync();
 
         fragmentPagerAdapter = new CustomFragmentPagerAdapter(getSupportFragmentManager());
         content = findViewById(R.id.viewpager);

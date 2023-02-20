@@ -21,9 +21,9 @@ public class FileSynchronizerBuilder {
     }
 
     public FileSynchronizer build() {
-        BaseFileSynchronizer baseFileSynchronizer = new BaseFileSynchronizer();
-        baseFileSynchronizer.setFileFetcher(this.fileFetcher);
-        baseFileSynchronizer.setFileUploader(this.fileUploader);
-        return baseFileSynchronizer;
+        DefaultFileSynchronizer defaultFileSynchronizer = new DefaultFileSynchronizer();
+        defaultFileSynchronizer.setFileFetcher(this.fileFetcher);
+        defaultFileSynchronizer.setFileUploader(this.fileUploader);
+        return defaultFileSynchronizer;
     }
 }

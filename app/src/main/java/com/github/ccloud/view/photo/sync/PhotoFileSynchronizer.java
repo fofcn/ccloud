@@ -8,12 +8,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
 import com.github.ccloud.common.date.DateUtil;
-import com.github.ccloud.common.sync.FileSynchronizer;
 import com.github.ccloud.common.sync.fetcher.FileFetcher;
 import com.github.ccloud.common.sync.meta.FileMeta;
 import com.github.ccloud.common.sync.upload.FileUploader;
@@ -26,9 +24,6 @@ import com.github.ccloud.util.ContextHolder;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,25 +32,8 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 
 public class PhotoFileSynchronizer implements FileFetcher, FileUploader {
-
-    private void upload(String createTime, String filePath) {
-
-    }
-
-    private MultipartBody createMultipartFile(String createTime, String filePath) {
-        File toUploadFile = new File(filePath);
-        RequestBody fileRequest = RequestBody.create(MediaType.parse("multipart/form-data"), toUploadFile);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("file", toUploadFile.getName(), fileRequest);
-        MultipartBody.Builder bodyBuilder = new MultipartBody.Builder();
-        return bodyBuilder
-                .setType(MediaType.parse("multipart/form-data"))
-                .addPart(part)
-                .addFormDataPart("createTime", createTime)
-                .addFormDataPart("mediaType", "photo").build();
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -100,6 +78,42 @@ public class PhotoFileSynchronizer implements FileFetcher, FileUploader {
         return fileMetaList;
     }
 
+
+    @Override
+    public UploadResult upload(FileMeta fileMeta) {
+        String createTimeStr = DateUtil.dateToString(fileMeta.getFileLastModifyTime());
+        MultipartBody body = createMultipartFile(createTimeStr, fileMeta.getAbsPath()) ;
+        String token = AuthUtil.getToken();
+        FileHttpApi fileApi = HttpApiFactory.getInstance().createHttpApi(FileHttpApi.class);
+        Call<Response<Void>> call = fileApi.upload(body, token);
+        try {
+            retrofit2.Response<Response<Void>> response = call.execute();
+            if (response.isSuccessful() && response.body().isSuccess()) {
+                Log.i(TAG, "Upload file success, file name: " + fileMeta.getName());
+                return UploadResult.success();
+            } else {
+                Log.i(TAG, "Upload file failed, file name: " + response.message());
+                return UploadResult.failed("");
+            }
+        } catch (IOException e) {
+            Log.i(TAG, "Upload file failed, file name: " + e.getMessage());
+            return UploadResult.failed("");
+        }
+
+    }
+
+    private MultipartBody createMultipartFile(String createTime, String filePath) {
+        File toUploadFile = new File(filePath);
+        RequestBody fileRequest = RequestBody.create(MediaType.parse("multipart/form-data"), toUploadFile);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("file", toUploadFile.getName(), fileRequest);
+        MultipartBody.Builder bodyBuilder = new MultipartBody.Builder();
+        return bodyBuilder
+                .setType(MediaType.parse("multipart/form-data"))
+                .addPart(part)
+                .addFormDataPart("createTime", createTime)
+                .addFormDataPart("mediaType", "photo").build();
+    }
+
     private Bundle createQueryArgs(int pageSize, int offset) {
         Bundle queryArgs = new Bundle();
         queryArgs.putInt(ContentResolver.QUERY_ARG_OFFSET, offset);
@@ -124,26 +138,4 @@ public class PhotoFileSynchronizer implements FileFetcher, FileUploader {
 
     }
 
-    @Override
-    public UploadResult upload(FileMeta fileMeta) {
-        String createTimeStr = DateUtil.dateToString(fileMeta.getFileLastModifyTime());
-        MultipartBody body = createMultipartFile(createTimeStr, fileMeta.getAbsPath()) ;
-        String token = AuthUtil.getToken();
-        FileHttpApi fileApi = HttpApiFactory.getInstance().createHttpApi(FileHttpApi.class);
-        Call<Response<Void>> call = fileApi.upload(body, token);
-        try {
-            retrofit2.Response<Response<Void>> response = call.execute();
-            if (response.isSuccessful() && response.body().isSuccess()) {
-                Log.i(TAG, "Upload file success, file name: " + fileMeta.getName());
-                return UploadResult.success();
-            } else {
-                Log.i(TAG, "Upload file failed, file name: " + response.message());
-                return UploadResult.failed("");
-            }
-        } catch (IOException e) {
-            Log.i(TAG, "Upload file failed, file name: " + e.getMessage());
-            return UploadResult.failed("");
-        }
-
-    }
 }

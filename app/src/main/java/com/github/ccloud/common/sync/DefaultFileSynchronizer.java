@@ -19,14 +19,14 @@ import com.github.ccloud.common.sync.upload.FileUploader;
 import com.github.ccloud.util.ContextHolder;
 
 import java.util.List;
-import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class BaseFileSynchronizer extends DelayManager implements FileSynchronizer {
+public class DefaultFileSynchronizer extends DelayManager implements FileSynchronizer {
 
     private ProgressManager progressManager;
 
@@ -46,7 +46,7 @@ public class BaseFileSynchronizer extends DelayManager implements FileSynchroniz
 
     private final ThreadPoolExecutor fileUploadExecutor = PoolHelper.newFixedPool("FileSynchronizer", "file-sync-worker-", 2, 128);
 
-    public BaseFileSynchronizer() {
+    public DefaultFileSynchronizer() {
         super(TimeUnit.SECONDS);
         FileMetaSQLiteOpenHelper fileMetaSQLiteOpenHelper = new FileMetaSQLiteOpenHelper(ContextHolder.getContext());
         this.fileMetaManager = new SQLiteMetaManager(fileMetaSQLiteOpenHelper);
@@ -76,7 +76,7 @@ public class BaseFileSynchronizer extends DelayManager implements FileSynchroniz
     public boolean init() {
         this.fileFetchManager = new FileFetchManager(this.fileFetcher, fileMetaManager);
         this.fileFetchManager.init();
-        this.fileUploader = new FileUploadWrapper(this.fileUploader, progressManager, fileMetaManager);
+        this.fileUploader = new FileUploadWrapper(this.fileUploader, fileMetaManager);
         return true;
     }
 
@@ -104,10 +104,15 @@ public class BaseFileSynchronizer extends DelayManager implements FileSynchroniz
                         List<FileMeta> fileMetaList = fileMetaManager.getFileMetaList(progress);
                         if (CollectionUtil.isNotEmpty(fileMetaList)) {
                             Log.i(TAG, "Get file meta list from meta manager, file meta size: " + fileMetaList.size());
-                            execUpload(fileMetaList, progress.getLastOffset());
+                            CountDownLatch processLatch = new CountDownLatch(fileMetaList.size());
+                            execUpload(fileMetaList, progress.getLastOffset(), processLatch);
+                            processLatch.await();
+                            progressManager.saveProgress(progress.getLastOffset() + fileMetaList.size());
+                            progressSemaphore.release();
                         } else {
                             Log.i(TAG, "No file meta list found, go to sleep");
                             sleep();
+                            progressSemaphore.release();
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -130,25 +135,17 @@ public class BaseFileSynchronizer extends DelayManager implements FileSynchroniz
         this.fileFetcher = fileFetcher;
     }
 
-    private void execUpload(List<FileMeta> fileMetaList, long lastOffset) {
-        CyclicBarrier barrier = new CyclicBarrier(fileMetaList.size(), () -> {
-            progressManager.saveProgress(lastOffset);
-            progressSemaphore.release();
-        });
-
+    private void execUpload(List<FileMeta> fileMetaList, long lastOffset, CountDownLatch processLatch) {
         for (FileMeta fileMeta : fileMetaList) {
-            fileUploadExecutor.submit(() -> {
+            fileUploadExecutor.execute(() -> {
                 try {
                     fileUploader.upload(fileMeta);
                 } catch (Throwable e) {
                     e.printStackTrace();//todo 异常处理
                     retryUpload();
-                }
-
-                try {
-                    barrier.await();
-                } catch (Exception e) {
-                    e.printStackTrace(); //todo 异常处理
+                } finally {
+                    processLatch.countDown();
+                    Log.i(TAG, "Finished uploading file to server, file name: " + fileMeta.getName());
                 }
             });
         }

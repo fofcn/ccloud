@@ -1,8 +1,6 @@
 package com.github.ccloud.common.sync;
 
-import java.util.List;
-
-public abstract class FileInDBFileSynchronizer extends BaseFileSynchronizer {
+public abstract class FileInDBFileSynchronizer extends DefaultFileSynchronizer {
 
     @Override
     public void sync() {

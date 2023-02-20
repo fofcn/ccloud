@@ -1,6 +1,6 @@
 package com.github.ccloud.common.sync;
 
-public class ProgressFileSynchronizer extends BaseFileSynchronizer {
+public class ProgressFileSynchronizer extends DefaultFileSynchronizer {
 
     // 保存进度文件同步器
     // 进度保存到SharePerforences
