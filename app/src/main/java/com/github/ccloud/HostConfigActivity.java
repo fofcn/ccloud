@@ -3,12 +3,14 @@ package com.github.ccloud;
 import static android.content.ContentValues.TAG;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,6 +34,7 @@ public class HostConfigActivity extends AppCompatActivity {
     private Button hostConfigBtn;
 
     private EditText hostEditText;
+    private ProgressBar progressBar;
 
     @Override
     protected void onDestroy() {
@@ -82,6 +85,11 @@ public class HostConfigActivity extends AppCompatActivity {
                 startActivity(new Intent(ContextHolder.getContext(), LoginActivity.class));
             });
         } else {
+            ProgressDialog progressDialog = new ProgressDialog(HostConfigActivity.this);
+            progressDialog.setMessage("Loading...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
             // 检查是否Token
             String token = AuthUtil.getToken();
             if ("".equals(host)) {
@@ -93,6 +101,7 @@ public class HostConfigActivity extends AppCompatActivity {
                 resp.enqueue(new Callback<Response<Void>>() {
                     @Override
                     public void onResponse(Call<Response<Void>> call, retrofit2.Response<Response<Void>> response) {
+                        progressDialog.dismiss();
                         Response resp = response.body();
                         if (resp.isSuccess()) {
                             // token 有效则跳转到首页
@@ -106,9 +115,12 @@ public class HostConfigActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Response<Void>> call, Throwable t) {
+                        progressDialog.dismiss();
                         Log.e("Network", "网络错误：" + t.getMessage() + "," + t);
                         Toast.makeText(HostConfigActivity.this, "网络不给力，请重试", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(ContextHolder.getContext(), LoginActivity.class));
+                        Intent loginIntent = new Intent(ContextHolder.getContext(), LoginActivity.class);
+                        loginIntent.putExtra("name", "Ford Ji");
+                        startActivity(loginIntent);
                     }
                 });
 

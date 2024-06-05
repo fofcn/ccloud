@@ -36,6 +36,11 @@ public class LoginActivity extends Activity {
         editUsername = findViewById(R.id.editUsername);
         editPassword = findViewById(R.id.editPassword);
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            Toast.makeText(this, intent.getStringExtra("name"), Toast.LENGTH_SHORT).show();
+        }
+
         loginBtn.setOnClickListener(view -> {
             // 获取用户名和密码
             String username = editUsername.getText().toString();

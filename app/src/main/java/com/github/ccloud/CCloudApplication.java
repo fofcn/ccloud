@@ -2,6 +2,7 @@ package com.github.ccloud;
 
 import android.app.Application;
 import android.content.res.Configuration;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -26,8 +27,20 @@ public class CCloudApplication extends Application {
         super.onCreate();
         ContextHolder.setContext(getApplicationContext());
 
-        // 配置Http API 工厂
+        Log.i("Application", "set global exception handler");
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+            @Override
+            public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
+
+            }
+        });
+        Log.i("Application", "set global exception handler");
+
+        Log.i("Application", "application is ready to init");
+        // 初始化配置HTTP工厂
         HttpApiFactory.getInstance().setOkHttpClient(HttpClient.create()).setConverterFactory(GsonConverterFactory.create());
+        Log.i("Application", "application initialization has completed");
     }
 
     @Override
@@ -44,5 +57,12 @@ public class CCloudApplication extends Application {
     @Override
     public void onLowMemory() {
         super.onLowMemory();
+    }
+
+    private void handleUncaughtException(Thread t, Throwable e) {
+        Log.e("Application", "Uncaught exception in thread: " + t.getName(), e);
+
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(1);
     }
 }
