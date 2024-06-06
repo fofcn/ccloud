@@ -1,6 +1,4 @@
-package com.github.ccloud.view.viewmodel;
-
-import android.accounts.Account;
+package com.github.ccloud.ui.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

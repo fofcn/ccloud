@@ -1,4 +1,4 @@
-package com.github.ccloud.view.index;
+package com.github.ccloud.ui.index;
 
 
 import android.os.Bundle;
@@ -11,13 +11,13 @@ import androidx.fragment.app.Fragment;
 
 import com.github.ccloud.R;
 
-public class OtherFragment extends Fragment {
+public class VideoFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.idx_other, container, false);
+        View view = inflater.inflate(R.layout.idx_video, container, false);
         TextView txt_content = (TextView) view.findViewById(R.id.txt_content);
-        txt_content.setText("其他");
+        txt_content.setText("视频");
         return view;
     }
 

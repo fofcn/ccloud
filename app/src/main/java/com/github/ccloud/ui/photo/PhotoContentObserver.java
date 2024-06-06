@@ -1,4 +1,4 @@
-package com.github.ccloud.view.photo;
+package com.github.ccloud.ui.photo;
 
 import android.database.ContentObserver;
 import android.net.Uri;

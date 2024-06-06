@@ -1,9 +1,9 @@
-package com.github.ccloud.view.photo;
+package com.github.ccloud.ui.photo;
 
 import com.github.ccloud.common.sync.DefaultFileSynchronizer;
 import com.github.ccloud.common.sync.FileSynchronizer;
 import com.github.ccloud.common.sync.PoolHelper;
-import com.github.ccloud.view.photo.sync.PhotoFileSynchronizer;
+import com.github.ccloud.ui.photo.sync.PhotoFileSynchronizer;
 
 import java.util.concurrent.ThreadPoolExecutor;
 

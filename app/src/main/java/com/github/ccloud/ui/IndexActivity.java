@@ -1,4 +1,4 @@
-package com.github.ccloud;
+package com.github.ccloud.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,8 +9,9 @@ import android.widget.RadioGroup;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.github.ccloud.view.index.CustomFragmentPagerAdapter;
-import com.github.ccloud.view.photo.Synchronizer;
+import com.github.ccloud.R;
+import com.github.ccloud.ui.index.CustomFragmentPagerAdapter;
+import com.github.ccloud.ui.photo.Synchronizer;
 
 import java.util.ArrayList;
 import java.util.List;

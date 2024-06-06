@@ -1,4 +1,4 @@
-package com.github.ccloud.view.index;
+package com.github.ccloud.ui.index;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

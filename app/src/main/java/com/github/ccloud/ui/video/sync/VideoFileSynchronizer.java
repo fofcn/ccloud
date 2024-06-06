@@ -1,4 +1,4 @@
-package com.github.ccloud.view.video.sync;
+package com.github.ccloud.ui.video.sync;
 
 import com.github.ccloud.common.sync.fetcher.FileFetcher;
 import com.github.ccloud.common.sync.meta.FileMeta;

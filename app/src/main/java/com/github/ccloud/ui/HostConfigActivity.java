@@ -1,4 +1,4 @@
-package com.github.ccloud;
+package com.github.ccloud.ui;
 
 import static android.content.ContentValues.TAG;
 
@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.github.ccloud.R;
 import com.github.ccloud.constant.HostConstant;
 import com.github.ccloud.entity.Response;
 import com.github.ccloud.http.api.AccountHttpApi;

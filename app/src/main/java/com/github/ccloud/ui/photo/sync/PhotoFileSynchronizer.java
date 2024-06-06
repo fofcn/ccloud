@@ -1,4 +1,4 @@
-package com.github.ccloud.view.photo.sync;
+package com.github.ccloud.ui.photo.sync;
 
 import static android.content.ContentValues.TAG;
 

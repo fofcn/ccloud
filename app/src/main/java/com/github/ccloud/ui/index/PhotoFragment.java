@@ -1,4 +1,4 @@
-package com.github.ccloud.view.index;
+package com.github.ccloud.ui.index;
 
 
 import android.graphics.Color;
@@ -16,7 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.ccloud.R;
 import com.github.ccloud.entity.dto.PhotoListDto;
 import com.github.ccloud.util.ContextHolder;
-import com.github.ccloud.view.photo.PhotoAdapter;
+import com.github.ccloud.ui.photo.PhotoAdapter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

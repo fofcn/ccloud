@@ -14,10 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CCloud"
         tools:targetApi="31">
-        <activity android:name=".LoginActivity" android:label="loginActivity"/>
-        <activity android:name=".IndexActivity" android:label="indexActivity"/>
+        <activity android:name=".ui.LoginActivity" android:label="loginActivity"/>
+        <activity android:name=".ui.IndexActivity" android:label="indexActivity"/>
         <activity
-            android:name=".HostConfigActivity"
+            android:name=".ui.HostConfigActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

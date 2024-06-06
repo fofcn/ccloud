@@ -1,4 +1,4 @@
-package com.github.ccloud;
+package com.github.ccloud.ui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,9 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.github.ccloud.R;
 import com.github.ccloud.entity.dto.LoginDto;
 import com.github.ccloud.util.AuthUtil;
-import com.github.ccloud.view.viewmodel.LoginViewModel;
+import com.github.ccloud.ui.viewmodel.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
 

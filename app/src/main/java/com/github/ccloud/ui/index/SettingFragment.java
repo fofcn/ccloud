@@ -1,4 +1,4 @@
-package com.github.ccloud.view.index;
+package com.github.ccloud.ui.index;
 
 
 import android.os.Bundle;
